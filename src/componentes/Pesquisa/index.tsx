@@ -1,8 +1,9 @@
 import styled from "styled-components"
 import Input from "../Input"
-import { useState } from "react"
-import { Livros } from "./dadosPesquisa"
+import { useEffect, useState } from "react"
 import { Titulo } from "../Ttitulo";
+import { getLivros } from "../../servicos/livros";
+import { postFavorito } from "../../servicos/favoritos";
 
 interface Livro {
     nome: string;
@@ -48,6 +49,21 @@ const ContainerLivro = styled.div`
 
 function Pesquisa() {
     const [livrosPesquisados, setLivrosPesquisados] = useState<Livro[]>([]);
+    const [livros, setlivros] = useState<Livro[]>([]);
+
+    useEffect(() => {
+        fetchLivros()
+    }, [])
+
+    async function fetchLivros() {
+        const LivrosAPI = await getLivros();
+        setlivros(LivrosAPI)
+    }
+
+    async function insertFavorito(id: string) {
+        await postFavorito(id)
+        alert(`Livro com o id: ${id} foi inserido aos favoritos!`)
+    }
 
     return (
         <SearchContainer>
@@ -55,11 +71,11 @@ function Pesquisa() {
             <SubTitulo>Encontre seu livro em nossa estante.</SubTitulo>
             <Input placeholder="Escreva sua próxima leitura" onBlur={evento => {
                 const textoDigitado = evento.target.value
-                const resultadoPesquisa = Livros.filter(livro => livro.nome.includes(textoDigitado))
+                const resultadoPesquisa = livros.filter(livro => livro.nome.includes(textoDigitado))
                 setLivrosPesquisados(resultadoPesquisa)
             }} />
             {livrosPesquisados.map(livro => (
-                <ContainerLivro>
+                <ContainerLivro onClick={() => insertFavorito(livro.id as unknown as string)}>
                     <Titulo cor="white" tamanho="1.5em">{livro.nome}</Titulo>
                     <img src={livro.src} />
                 </ContainerLivro>

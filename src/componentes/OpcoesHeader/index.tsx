@@ -1,5 +1,6 @@
-const textoOpcoes = ['CATEGORIAS', 'FAVORITOS', 'MINHA ESTANTE']
 import styled from 'styled-components'
+import { Link } from 'react-router-dom';
+
 
 const Style_Opcoes_Header = styled.ul `
   display: flex;
@@ -16,6 +17,7 @@ const Style_Opcoes_item = styled.li `
     cursor: pointer;
     color: black;
     transition: font-size 0.3s ease-in-out, color 0.3s ease; /* Transição para cor e fundo */
+    text-decoration: none;
 
 
     &:hover {
@@ -26,11 +28,13 @@ const Style_Opcoes_item = styled.li `
 `
 
 
+const textoOpcoes = ['CATEGORIAS', 'FAVORITOS', 'MINHA ESTANTE']
+
 function OpcoesHeader() {
     return(
         <Style_Opcoes_Header>
           {textoOpcoes.map((texto) => (
-            <Style_Opcoes_item><p>{texto}</p></Style_Opcoes_item>
+            <Link to={`/${texto.toLowerCase()}`}> <Style_Opcoes_item><p>{texto}</p></Style_Opcoes_item> </Link> 
           ))}
         </Style_Opcoes_Header>
     )
